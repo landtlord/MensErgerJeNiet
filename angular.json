@@ -124,5 +124,8 @@
       }
     }
   },
-  "defaultProject": "ludo"
+  "defaultProject": "ludo",
+  "cli": {
+    "analytics": "4503500a-1d61-4c7e-bdcf-eda23f7009f8"
+  }
 }
