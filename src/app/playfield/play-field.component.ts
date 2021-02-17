@@ -4,15 +4,16 @@ import {PlayFieldPlace} from '../model/play-field-place';
 import {PlayField} from '../model/play-field';
 
 @Component({
-  selector: 'app-playfield',
+  selector: 'app-play-field',
   templateUrl: './play-field.component.html',
   styleUrls: ['./play-field.component.css']
 })
 export class PlayFieldComponent implements OnInit {
   dice: number | undefined;
-  playField: PlayField = new PlayField();
+  playField: PlayField;
 
   constructor(private diceService: DiceService) {
+    this.playField = new PlayField();
   }
 
   ngOnInit(): void {
