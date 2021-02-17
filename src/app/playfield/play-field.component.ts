@@ -1,7 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {DiceService} from '../services/dice/dice.service';
-import {PlayFieldPlace} from '../model/play-field-place';
-import {PlayField} from '../model/play-field';
+import {PlayFieldService} from '../services/play-field.service';
 
 @Component({
   selector: 'app-play-field',
@@ -10,16 +9,20 @@ import {PlayField} from '../model/play-field';
 })
 export class PlayFieldComponent implements OnInit {
   dice: number | undefined;
-  playField: PlayField;
 
-  constructor(private diceService: DiceService) {
-    this.playField = new PlayField();
+  pawnOn = 0;
+
+  constructor(private diceService: DiceService,
+              private playFieldService: PlayFieldService) {
   }
 
   ngOnInit(): void {
+    this.playFieldService.initiate();
   }
 
   rollDice(): void {
     this.dice = this.diceService.rollDice();
+    this.playFieldService.movePawnOn(this.pawnOn, this.dice);
+    this.pawnOn += this.dice;
   }
 }
