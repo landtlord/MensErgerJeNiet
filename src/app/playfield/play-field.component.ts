@@ -13,7 +13,7 @@ export class PlayFieldComponent implements OnInit {
   pawnOn = 0;
 
   constructor(private diceService: DiceService,
-              private playFieldService: PlayFieldService) {
+              public playFieldService: PlayFieldService) {
   }
 
   ngOnInit(): void {

@@ -8,13 +8,29 @@ import {Color} from '../model/pawn/color.enum';
 })
 export class PlayFieldService {
   playFieldPlaces: PlayFieldPlace[];
+  redHome: PlayFieldPlace[];
+  blueHome: PlayFieldPlace[];
+  greenHome: PlayFieldPlace[];
+  yellowHome: PlayFieldPlace[];
+  redRemainingPawn: number;
+  blueRemainingPawn: number;
+  greenRemainingPawn: number;
+  yellowRemainingPawn: number;
 
   constructor() {
-    this.playFieldPlaces = this.generateNewPlayField();
+    this.playFieldPlaces = this.generateNewPlayField(40);
+    this.redHome = this.generateNewPlayField(4);
+    this.blueHome = this.generateNewPlayField(4);
+    this.greenHome = this.generateNewPlayField(4);
+    this.yellowHome = this.generateNewPlayField(4);
+    this.redRemainingPawn = 4;
+    this.blueRemainingPawn = 4;
+    this.greenRemainingPawn = 4;
+    this.yellowRemainingPawn = 4;
   }
 
-  generateNewPlayField(): PlayFieldPlace[] {
-    const arrayToCreate: PlayFieldPlace[] = new Array(40);
+  generateNewPlayField(numberOfPlaces: number): PlayFieldPlace[] {
+    const arrayToCreate: PlayFieldPlace[] = new Array(numberOfPlaces);
     for (let i = 0; i < arrayToCreate.length; i++) {
       arrayToCreate[i] = new PlayFieldPlace(i);
     }
@@ -26,7 +42,7 @@ export class PlayFieldService {
   }
 
   movePawnOn(pawnOn: number, dice: number): void {
-    this.playFieldPlaces[pawnOn + dice].pawnOnPlace = this.playFieldPlaces[pawnOn].pawnOnPlace;
+    this.playFieldPlaces[(pawnOn + dice) % 40].pawnOnPlace = this.playFieldPlaces[pawnOn].pawnOnPlace;
     this.playFieldPlaces[pawnOn].pawnOnPlace = undefined;
   }
 }
