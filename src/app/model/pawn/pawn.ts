@@ -6,9 +6,12 @@ export class Pawn {
 
   coordinate: Coordinate;
 
+  name: string;
 
-  constructor(color: Color, coordinate: Coordinate) {
+
+  constructor(color: Color, coordinate: Coordinate, name: string) {
     this.color = color;
     this.coordinate = coordinate;
+    this.name = name;
   }
 }

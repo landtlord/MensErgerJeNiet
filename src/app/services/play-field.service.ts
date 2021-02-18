@@ -8,6 +8,7 @@ import {Coordinate} from '../model/pawn/coordinate';
   providedIn: 'root'
 })
 export class PlayFieldService {
+  pawns: Pawn[] = [];
   playFieldPlaces: PlayFieldPlace[];
   redHome: PlayFieldPlace[];
   blueHome: PlayFieldPlace[];
@@ -82,26 +83,22 @@ export class PlayFieldService {
   }
 
   initiate(): void {
-    this.playFieldPlaces[0].pawnOnPlace = new Pawn(Color.YELLOW, new Coordinate(0, 4));
+    this.pawns.push(new Pawn(Color.YELLOW, new Coordinate(0, 4), 'Yellow1'));
+    this.pawns.push(new Pawn(Color.YELLOW, new Coordinate(1, 4), 'Yellow2'));
+    this.pawns.push(new Pawn(Color.YELLOW, new Coordinate(2, 4), 'Yellow3'));
+    this.pawns.push(new Pawn(Color.YELLOW, new Coordinate(3, 4), 'Yellow4'));
   }
 
-  movePawnOn(pawnOn: number, dice: number): number {
-    const newPlace = (pawnOn + dice) % 40;
-    this.playFieldPlaces[newPlace].pawnOnPlace = this.playFieldPlaces[pawnOn].pawnOnPlace;
-    // @ts-ignore
-    this.playFieldPlaces[newPlace].pawnOnPlace.coordinate = this.mapPlaceOnFieldToCoordinate(newPlace);
-    this.playFieldPlaces[pawnOn].pawnOnPlace = undefined;
-    return newPlace;
+  movePawn(pawn: Pawn, dice: number): void {
+    let index = this.coordinates.findIndex(coordinate => coordinate === pawn.coordinate);
+    index = (index + dice) % 40;
+    pawn.coordinate = this.coordinates[index];
   }
+
+
 
   getBoard(): Pawn[] {
-    const pawns: Pawn[] = [];
-    for (const item of this.playFieldPlaces) {
-      if (item.pawnOnPlace !== undefined) {
-        pawns.push(item.pawnOnPlace as Pawn);
-      }
-    }
-    return pawns;
+    return this.pawns;
   }
 
   mapPlaceOnFieldToCoordinate(placeOnField: number): Coordinate {

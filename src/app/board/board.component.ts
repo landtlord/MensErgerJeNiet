@@ -1,6 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {PlayFieldService} from '../services/play-field.service';
 import {Pawn} from '../model/pawn/pawn';
+import {SvgCircle} from '../model/pawn/svg-circle';
+import {Color} from '../model/pawn/color.enum';
+import {Coordinate} from '../model/pawn/coordinate';
 
 @Component({
   selector: 'app-board',
@@ -8,24 +11,33 @@ import {Pawn} from '../model/pawn/pawn';
   styleUrls: ['./board.component.css']
 })
 export class BoardComponent implements OnInit {
-  cx = '200';
-  cy = '240';
   pawns: Pawn[] = [];
-  fill = 'white';
+  svgCircles: SvgCircle[] = [];
 
   constructor(public playFieldService: PlayFieldService) {
   }
 
+  static getPlace(item: number): string {
+    return ((800 / 22) + item * (800 / 11)).toString();
+  }
+
   ngOnInit(): void {
     this.pawns = this.playFieldService.getBoard();
-    this.putPawnOnBoard();
   }
 
-  putPawnOnBoard(): void {
-    const pawn: Pawn = this.pawns[0];
-    this.cx = ((800 / 22) + pawn.coordinate.x * (800 / 11)).toString();
-    this.cy = ((800 / 22) + pawn.coordinate.y * (800 / 11)).toString();
-    this.fill = pawn.color.toString();
+  getPawnToMove(): Pawn {
+    return this.pawns[0];
   }
 
+  getX(pawn: Pawn): string {
+    return BoardComponent.getPlace(pawn.coordinate.x);
+  }
+
+  getY(pawn: Pawn): string {
+    return BoardComponent.getPlace(pawn.coordinate.y);
+  }
+
+  pawnClick(pawn: Pawn): Pawn {
+    return pawn;
+  }
 }

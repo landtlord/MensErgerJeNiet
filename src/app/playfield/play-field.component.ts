@@ -26,8 +26,8 @@ export class PlayFieldComponent implements OnInit, AfterViewInit {
 
   rollDice(): void {
     this.dice = this.diceService.rollDice();
-    this.pawnOn = this.playFieldService.movePawnOn(this.pawnOn, this.dice);
-    this.board.putPawnOnBoard();
+    const pawnToMove = this.board.getPawnToMove();
+    this.playFieldService.movePawn(pawnToMove, this.dice);
   }
 
   ngAfterViewInit(): void {
