@@ -3,12 +3,14 @@ import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { PlayfieldComponent } from './playfield/playfield.component';
+import { PlayFieldComponent } from './playfield/play-field.component';
+import { BoardComponent } from './board/board.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    PlayfieldComponent
+    PlayFieldComponent,
+    BoardComponent
   ],
   imports: [
     BrowserModule,
