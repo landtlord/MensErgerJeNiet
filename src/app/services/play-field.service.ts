@@ -9,15 +9,6 @@ import {Coordinate} from '../model/pawn/coordinate';
 })
 export class PlayFieldService {
   pawns: Pawn[] = [];
-  playFieldPlaces: PlayFieldPlace[];
-  redHome: PlayFieldPlace[];
-  blueHome: PlayFieldPlace[];
-  greenHome: PlayFieldPlace[];
-  yellowHome: PlayFieldPlace[];
-  redRemainingPawn: number;
-  blueRemainingPawn: number;
-  greenRemainingPawn: number;
-  yellowRemainingPawn: number;
 
   coordinates: Coordinate[] = [
     new Coordinate(0, 4),
@@ -63,30 +54,26 @@ export class PlayFieldService {
   ];
 
   constructor() {
-    this.playFieldPlaces = this.generateNewPlayField(40);
-    this.redHome = this.generateNewPlayField(4);
-    this.blueHome = this.generateNewPlayField(4);
-    this.greenHome = this.generateNewPlayField(4);
-    this.yellowHome = this.generateNewPlayField(4);
-    this.redRemainingPawn = 3;
-    this.blueRemainingPawn = 4;
-    this.greenRemainingPawn = 4;
-    this.yellowRemainingPawn = 4;
   }
 
-  generateNewPlayField(numberOfPlaces: number): PlayFieldPlace[] {
-    const arrayToCreate: PlayFieldPlace[] = new Array(numberOfPlaces);
-    for (let i = 0; i < arrayToCreate.length; i++) {
-      arrayToCreate[i] = new PlayFieldPlace(i);
-    }
-    return arrayToCreate;
-  }
 
   initiate(): void {
-    this.pawns.push(new Pawn(Color.YELLOW, new Coordinate(0, 4), 'Yellow1'));
-    this.pawns.push(new Pawn(Color.YELLOW, new Coordinate(1, 4), 'Yellow2'));
-    this.pawns.push(new Pawn(Color.YELLOW, new Coordinate(2, 4), 'Yellow3'));
-    this.pawns.push(new Pawn(Color.YELLOW, new Coordinate(3, 4), 'Yellow4'));
+    this.pawns.push(new Pawn(Color.YELLOW, new Coordinate(4, 10), 'Yellow1'));
+    this.pawns.push(new Pawn(Color.YELLOW, new Coordinate(0, 10), 'Yellow2'));
+    this.pawns.push(new Pawn(Color.YELLOW, new Coordinate(1, 9), 'Yellow3'));
+    this.pawns.push(new Pawn(Color.YELLOW, new Coordinate(1, 10), 'Yellow4'));
+    this.pawns.push(new Pawn(Color.RED, new Coordinate(0, 4), 'Red1'));
+    this.pawns.push(new Pawn(Color.RED, new Coordinate(0, 1), 'Red2'));
+    this.pawns.push(new Pawn(Color.RED, new Coordinate(1, 0), 'Red3'));
+    this.pawns.push(new Pawn(Color.RED, new Coordinate(1, 1), 'Red4'));
+    this.pawns.push(new Pawn(Color.BLEU, new Coordinate(6, 0), 'Bleu1'));
+    this.pawns.push(new Pawn(Color.BLEU, new Coordinate(9, 1), 'Bleu2'));
+    this.pawns.push(new Pawn(Color.BLEU, new Coordinate(10, 0), 'Bleu3'));
+    this.pawns.push(new Pawn(Color.BLEU, new Coordinate(10, 1), 'Bleu4'));
+    this.pawns.push(new Pawn(Color.GREEN, new Coordinate(10, 6), 'Green1'));
+    this.pawns.push(new Pawn(Color.GREEN, new Coordinate(10, 9), 'Green2'));
+    this.pawns.push(new Pawn(Color.GREEN, new Coordinate(9, 10), 'Green3'));
+    this.pawns.push(new Pawn(Color.GREEN, new Coordinate(9, 9), 'Green4'));
   }
 
   movePawn(pawn: Pawn, dice: number): void {
@@ -94,8 +81,6 @@ export class PlayFieldService {
     index = (index + dice) % 40;
     pawn.coordinate = this.coordinates[index];
   }
-
-
 
   getBoard(): Pawn[] {
     return this.pawns;

@@ -13,6 +13,7 @@ import {Coordinate} from '../model/pawn/coordinate';
 export class BoardComponent implements OnInit {
   pawns: Pawn[] = [];
   svgCircles: SvgCircle[] = [];
+  clickedPawn: Pawn | null = null;
 
   constructor(public playFieldService: PlayFieldService) {
   }
@@ -25,8 +26,8 @@ export class BoardComponent implements OnInit {
     this.pawns = this.playFieldService.getBoard();
   }
 
-  getPawnToMove(): Pawn {
-    return this.pawns[0];
+  getPawnToMove(): Pawn | null {
+    return this.clickedPawn;
   }
 
   getX(pawn: Pawn): string {
@@ -37,7 +38,7 @@ export class BoardComponent implements OnInit {
     return BoardComponent.getPlace(pawn.coordinate.y);
   }
 
-  pawnClick(pawn: Pawn): Pawn {
-    return pawn;
+  pawnClick(pawn: Pawn): void {
+    this.clickedPawn = pawn;
   }
 }

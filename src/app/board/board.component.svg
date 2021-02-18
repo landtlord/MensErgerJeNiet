@@ -1,5 +1,5 @@
 <svg>
   <g *ngFor="let item of pawns">
-    <circle r="20" [attr.cx]="getX(item)" [attr.cy]="getY(item)" [attr.fill]="item.color" stroke=" black" stroke-width="3" (click)="pawnClick(item)"/>
+    <circle r="20" [attr.cx]="getX(item)" [attr.cy]="getY(item)" [attr.fill]="item.color" stroke="black" stroke-width="3" (click)="pawnClick(item)"/>
   </g>
 </svg>

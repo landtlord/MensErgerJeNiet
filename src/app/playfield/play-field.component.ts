@@ -9,7 +9,7 @@ import {BoardComponent} from '../board/board.component';
   styleUrls: ['./play-field.component.css']
 })
 export class PlayFieldComponent implements OnInit, AfterViewInit {
-  dice: number | undefined;
+  dice: number | null = null;
 
   pawnOn = 0;
 
@@ -26,8 +26,14 @@ export class PlayFieldComponent implements OnInit, AfterViewInit {
 
   rollDice(): void {
     this.dice = this.diceService.rollDice();
-    const pawnToMove = this.board.getPawnToMove();
-    this.playFieldService.movePawn(pawnToMove, this.dice);
+  }
+
+  moveSelectedPawn(): void {
+    if (this.board.clickedPawn !== null && this.dice !== null){
+      this.playFieldService.movePawn(this.board.clickedPawn, this.dice);
+      this.board.clickedPawn = null;
+      this.dice = null;
+    }
   }
 
   ngAfterViewInit(): void {
