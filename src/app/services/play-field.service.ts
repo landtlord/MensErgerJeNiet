@@ -82,7 +82,7 @@ export class PlayFieldService {
   }
 
   initiate(): void {
-    this.playFieldPlaces[0].pawnOnPlace = new Pawn(Color.RED, new Coordinate(0, 4));
+    this.playFieldPlaces[0].pawnOnPlace = new Pawn(Color.YELLOW, new Coordinate(0, 4));
   }
 
   movePawnOn(pawnOn: number, dice: number): number {

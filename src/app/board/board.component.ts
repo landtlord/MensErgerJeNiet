@@ -11,6 +11,7 @@ export class BoardComponent implements OnInit {
   cx = '200';
   cy = '240';
   pawns: Pawn[] = [];
+  fill = 'white';
 
   constructor(public playFieldService: PlayFieldService) {
   }
@@ -24,6 +25,7 @@ export class BoardComponent implements OnInit {
     const pawn: Pawn = this.pawns[0];
     this.cx = ((800 / 22) + pawn.coordinate.x * (800 / 11)).toString();
     this.cy = ((800 / 22) + pawn.coordinate.y * (800 / 11)).toString();
+    this.fill = pawn.color.toString();
   }
 
 }
