@@ -55,7 +55,6 @@ export class PlayFieldService {
   constructor() {
   }
 
-
   private readonly RED_START = this.coordinates[0];
   private readonly BLEU_START = this.coordinates[10];
   private readonly GREEN_START = this.coordinates[20];
@@ -107,7 +106,7 @@ export class PlayFieldService {
     return this.pawns;
   }
 
-  mapPlaceOnFieldToCoordinate(placeOnField: number): Coordinate {
-    return this.coordinates[placeOnField];
+  getCoordinates(): Coordinate[]{
+    return this.coordinates;
   }
 }

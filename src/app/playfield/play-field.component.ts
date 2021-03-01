@@ -2,6 +2,8 @@ import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {DiceService} from '../services/dice/dice.service';
 import {PlayFieldService} from '../services/play-field.service';
 import {BoardComponent} from '../board/board.component';
+import {NotificationsService} from 'angular2-notifications';
+import {MoveValidatorService} from '../services/move-validator.service';
 
 @Component({
   selector: 'app-play-field',
@@ -17,7 +19,9 @@ export class PlayFieldComponent implements OnInit, AfterViewInit {
   @ViewChild(BoardComponent) board: BoardComponent;
 
   constructor(private diceService: DiceService,
-              public playFieldService: PlayFieldService) {
+              public playFieldService: PlayFieldService,
+              private notificationService: NotificationsService,
+              private moveValidatorService: MoveValidatorService) {
   }
 
   ngOnInit(): void {
@@ -31,20 +35,26 @@ export class PlayFieldComponent implements OnInit, AfterViewInit {
   moveSelectedPawn(): void {
     if (this.board.clickedPawn !== null && this.dice !== null) {
       if (this.isValidMove()) {
-        this.playFieldService.movePawn(this.board.clickedPawn, this.dice);
+        this.movePawn();
+      } else {
+        this.notificationService.info('Illegal Move', 'Please try again or pass');
         this.board.clickedPawn = null;
-        this.dice = null;
-      } else
-      {
-
       }
     }
+  }
+
+  private movePawn(): void {
+    // @ts-ignore
+    this.playFieldService.movePawn(this.board.clickedPawn, this.dice);
+    this.board.clickedPawn = null;
+    this.dice = null;
   }
 
   ngAfterViewInit(): void {
   }
 
   private isValidMove(): boolean {
-    return false;
+    // @ts-ignore
+    return this.moveValidatorService.isValidMove(this.board.clickedPawn, this.dice);
   }
 }
