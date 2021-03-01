@@ -4,6 +4,8 @@ import {PlayFieldService} from '../services/play-field.service';
 import {BoardComponent} from '../board/board.component';
 import {NotificationsService} from 'angular2-notifications';
 import {MoveValidatorService} from '../services/move-validator.service';
+import {Player} from '../model/player';
+import {Color} from '../model/pawn/color.enum';
 
 @Component({
   selector: 'app-play-field',
@@ -12,6 +14,8 @@ import {MoveValidatorService} from '../services/move-validator.service';
 })
 export class PlayFieldComponent implements OnInit, AfterViewInit {
   dice: number | null = null;
+
+  player: Player = new Player(Color.BLEU);
 
   pawnOn = 0;
 
@@ -56,5 +60,9 @@ export class PlayFieldComponent implements OnInit, AfterViewInit {
   private isValidMove(): boolean {
     // @ts-ignore
     return this.moveValidatorService.isValidMove(this.board.clickedPawn, this.dice);
+  }
+
+  nextPlayer(): void {
+
   }
 }

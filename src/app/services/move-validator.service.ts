@@ -1,17 +1,18 @@
 import {Injectable} from '@angular/core';
 import {PlayFieldService} from './play-field.service';
 import {Pawn} from '../model/pawn/pawn';
+import {Constants} from '../common/Constants';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MoveValidatorService {
 
-  constructor(private playFieldService: PlayFieldService) {
+  constructor() {
   }
 
   public isValidMove(pawn: Pawn, dice: number): boolean {
-    const isOnBoard: boolean = this.playFieldService.coordinates.includes(pawn.coordinate);
+    const isOnBoard: boolean = Constants.COORDINATES.includes(pawn.coordinate);
     const canStartFromHome: boolean = this.canStartFromHome(isOnBoard, dice);
 
     return isOnBoard || canStartFromHome;

@@ -26,10 +26,6 @@ export class BoardComponent implements OnInit {
     this.pawns = this.playFieldService.getBoard();
   }
 
-  getPawnToMove(): Pawn | null {
-    return this.clickedPawn;
-  }
-
   getX(pawn: Pawn): string {
     return BoardComponent.getPlace(pawn.coordinate.x);
   }
