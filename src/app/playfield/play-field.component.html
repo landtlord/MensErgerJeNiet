@@ -1,10 +1,17 @@
-<button (click)="rollDice()">Press to roll the dice</button>
+<button (click)="rollDice()">Roll the dice</button>
 <button (click)="moveSelectedPawn()">Move selected pawn</button>
+<button (click)="nextPlayer()">Pass</button>
 <br>
+Player to move :
+<svg height="50" width="50">
+  <circle cx="25" cy="25" r="20" stroke="black" stroke-width="3" [attr.fill]="player.color" />
+  Sorry, your browser does not support inline SVG.
+</svg>
 
 {{dice}}
 
 
+<simple-notifications></simple-notifications>
 <app-board></app-board>
 
 
