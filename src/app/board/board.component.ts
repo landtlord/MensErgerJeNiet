@@ -2,8 +2,6 @@ import {Component, OnInit} from '@angular/core';
 import {PlayFieldService} from '../services/play-field.service';
 import {Pawn} from '../model/pawn/pawn';
 import {SvgCircle} from '../model/pawn/svg-circle';
-import {Color} from '../model/pawn/color.enum';
-import {Coordinate} from '../model/pawn/coordinate';
 
 @Component({
   selector: 'app-board',
@@ -26,11 +24,17 @@ export class BoardComponent implements OnInit {
     this.pawns = this.playFieldService.getBoard();
   }
 
-  getX(pawn: Pawn): string {
+  getX(pawn: Pawn | null): string {
+    if (pawn === null) {
+      return '0';
+    }
     return BoardComponent.getPlace(pawn.coordinate.x);
   }
 
-  getY(pawn: Pawn): string {
+  getY(pawn: Pawn | null): string {
+    if (pawn === null) {
+      return '0';
+    }
     return BoardComponent.getPlace(pawn.coordinate.y);
   }
 

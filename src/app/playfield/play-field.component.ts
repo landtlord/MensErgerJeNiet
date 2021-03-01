@@ -33,7 +33,11 @@ export class PlayFieldComponent implements OnInit, AfterViewInit {
   }
 
   rollDice(): void {
-    this.dice = this.diceService.rollDice();
+    if (this.dice === null) {
+      this.dice = this.diceService.rollDice();
+    } else {
+      this.notificationService.info('Already rolled the dice', 'Please pick a pawn to move or pass');
+    }
   }
 
   moveSelectedPawn(): void {
