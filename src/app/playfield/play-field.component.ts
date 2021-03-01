@@ -29,13 +29,22 @@ export class PlayFieldComponent implements OnInit, AfterViewInit {
   }
 
   moveSelectedPawn(): void {
-    if (this.board.clickedPawn !== null && this.dice !== null){
-      this.playFieldService.movePawn(this.board.clickedPawn, this.dice);
-      this.board.clickedPawn = null;
-      this.dice = null;
+    if (this.board.clickedPawn !== null && this.dice !== null) {
+      if (this.isValidMove()) {
+        this.playFieldService.movePawn(this.board.clickedPawn, this.dice);
+        this.board.clickedPawn = null;
+        this.dice = null;
+      } else
+      {
+
+      }
     }
   }
 
   ngAfterViewInit(): void {
+  }
+
+  private isValidMove(): boolean {
+    return false;
   }
 }
