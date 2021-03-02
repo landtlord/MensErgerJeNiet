@@ -41,26 +41,22 @@ export class PlayFieldComponent implements OnInit, AfterViewInit {
   }
 
   moveSelectedPawn(): void {
-    if (this.board.clickedPawn !== null && this.dice !== null) {
-      if (this.player.color === this.board.clickedPawn.color) {
-        if (this.isValidMove()) {
-          this.movePawn();
-          this.player = this.playerService.getNextPlayer(this.player);
-        } else {
-          this.notificationService.info('Illegal Move', 'Please try again or pass');
-          this.board.clickedPawn = null;
-        }
-      } else {
-        this.notificationService.info('Can\'t move the pawn of another player', 'Please pick one of your own pawn');
+    if (this.isValidMove()) {
+      this.movePawn();
+      if (this.playFieldService.checkIfPlayerWins(this.player)) {
+      //  goto winner page
       }
+      this.setNextPlayer();
+      this.resetDiceAndPawn();
+    } else {
+      this.board.clickedPawn = null;
     }
   }
 
   nextPlayer(): void {
     if (this.dice !== null) {
       this.player = this.playerService.getNextPlayer(this.player);
-      this.board.clickedPawn = null;
-      this.dice = null;
+      this.resetDiceAndPawn();
     } else {
       this.notificationService.info('Roll the dice before passing', 'Press the roll the dice button');
     }
@@ -69,8 +65,6 @@ export class PlayFieldComponent implements OnInit, AfterViewInit {
   private movePawn(): void {
     // @ts-ignore
     this.playFieldService.movePawn(this.board.clickedPawn, this.dice);
-    this.board.clickedPawn = null;
-    this.dice = null;
   }
 
   ngAfterViewInit(): void {
@@ -78,6 +72,17 @@ export class PlayFieldComponent implements OnInit, AfterViewInit {
 
   private isValidMove(): boolean {
     // @ts-ignore
-    return this.moveValidatorService.isValidMove(this.board.clickedPawn, this.dice);
+    return this.moveValidatorService.isValidMove(this.board.clickedPawn, this.dice, this.player);
+  }
+
+  private setNextPlayer(): void {
+    if (this.dice !== 6) {
+      this.player = this.playerService.getNextPlayer(this.player);
+    }
+  }
+
+  private resetDiceAndPawn(): void {
+    this.board.clickedPawn = null;
+    this.dice = null;
   }
 }

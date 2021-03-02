@@ -3,14 +3,20 @@ import {Pawn} from '../model/pawn/pawn';
 import {Color} from '../model/pawn/color.enum';
 import {Coordinate} from '../model/pawn/coordinate';
 import {Constants} from '../common/Constants';
+import {Player} from '../model/player';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PlayFieldService {
-  pawns: Pawn[] = [];
 
   constructor() {
+  }
+
+  pawns: Pawn[] = [];
+
+  public static getIndex(pawn: Pawn): number {
+    return Constants.COORDINATES.findIndex(coordinate => coordinate === pawn.coordinate);
   }
 
   initiate(): void {
@@ -33,34 +39,91 @@ export class PlayFieldService {
   }
 
   movePawn(pawn: Pawn, dice: number): void {
-    let index = Constants.COORDINATES.findIndex(coordinate => coordinate === pawn.coordinate);
+    let index = PlayFieldService.getIndex(pawn);
 
     if (index === -1) {
       this.putOnBoard(pawn);
-    } else {
+    } else if (!this.isGoingInShelter(pawn, dice)) {
       index = (index + dice) % 40;
-      pawn.coordinate = Constants.COORDINATES[index];
+      const coordinate = Constants.COORDINATES[index];
+      this.movePawnTo(pawn, coordinate);
+    } else {
+      const indexForLastCoordinate = Constants.getIndexForLastCoordinate(pawn);
+      let indexInShelter = index + dice - indexForLastCoordinate - 1;
+      if (indexInShelter === 4) {
+        indexInShelter = 2;
+      }
+      if (indexInShelter === 5) {
+        indexInShelter = 1;
+      }
+      pawn.coordinate = Constants.getShelterCoordinatesFor(pawn.color)[indexInShelter];
     }
   }
 
-  getBoard(): Pawn[] {
+  getPawns(): Pawn[] {
     return this.pawns;
+  }
+
+  getPawnOn(coordinate: Coordinate): Pawn | null {
+    for (const pawn of this.pawns) {
+      if (pawn.coordinate === coordinate) {
+        return pawn;
+      }
+    }
+    return null;
   }
 
   private putOnBoard(pawn: Pawn): void {
     switch (pawn.color) {
       case Color.RED:
-        pawn.coordinate = Constants.COORDINATES[Constants.RED_START];
+        this.movePawnTo(pawn, Constants.COORDINATES[Constants.RED_START]);
         break;
       case Color.BLEU:
-        pawn.coordinate = Constants.COORDINATES[Constants.BLEU_START];
+        this.movePawnTo(pawn, Constants.COORDINATES[Constants.BLEU_START]);
         break;
       case Color.GREEN:
-        pawn.coordinate = Constants.COORDINATES[Constants.GREEN_START];
+        this.movePawnTo(pawn, Constants.COORDINATES[Constants.GREEN_START]);
         break;
       case Color.YELLOW:
-        pawn.coordinate = Constants.COORDINATES[Constants.YELLOW_START];
+        this.movePawnTo(pawn, Constants.COORDINATES[Constants.YELLOW_START]);
         break;
     }
+  }
+
+  private movePawnTo(pawn: Pawn, coordinate: Coordinate): void {
+    this.sendHome(this.getPawnOn(coordinate));
+    pawn.coordinate = coordinate;
+  }
+
+  private isGoingInShelter(pawn: Pawn, dice: number): boolean {
+    const index = PlayFieldService.getIndex(pawn);
+    const indexForLastCoordinate = Constants.getIndexForLastCoordinate(pawn);
+    return index < indexForLastCoordinate && (index + dice) > indexForLastCoordinate;
+  }
+
+  private sendHome(pawn: Pawn | null): void {
+    if (pawn !== null) {
+      const homeCoordinates = Constants.getHomeCoordinatesFor(pawn);
+      pawn.coordinate = this.findFirstEmpty(homeCoordinates);
+    }
+  }
+
+  // @ts-ignore
+  private findFirstEmpty(coordinates: Coordinate[]): Coordinate {
+    for (const coordinate of coordinates) {
+      if (this.getPawnOn(coordinate) === null) {
+        return coordinate;
+      }
+    }
+  }
+
+  checkIfPlayerWins(player: Player): boolean {
+    const shelterCoordinates = Constants.getShelterCoordinatesFor(player.color);
+    for (const coordinate of shelterCoordinates) {
+      if (this.getPawnOn(coordinate) === null) {
+        return false;
+      }
+    }
+    return true;
   }
 }

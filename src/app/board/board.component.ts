@@ -21,7 +21,7 @@ export class BoardComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.pawns = this.playFieldService.getBoard();
+    this.pawns = this.playFieldService.getPawns();
   }
 
   getX(pawn: Pawn | null): string {

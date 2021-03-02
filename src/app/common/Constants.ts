@@ -1,4 +1,6 @@
 import {Coordinate} from '../model/pawn/coordinate';
+import {Pawn} from '../model/pawn/pawn';
+import {Color} from '../model/pawn/color.enum';
 
 export class Constants {
   public static COORDINATES: Coordinate[] = [
@@ -76,4 +78,70 @@ export class Constants {
     new Coordinate(1, 9),
     new Coordinate(1, 10)
   ];
+
+  public static RED_SHELTER: Coordinate[] = [
+    new Coordinate(1, 5),
+    new Coordinate(2, 5),
+    new Coordinate(3, 5),
+    new Coordinate(4, 5)
+  ];
+
+  public static BLEU_SHELTER: Coordinate[] = [
+    new Coordinate(5, 1),
+    new Coordinate(5, 2),
+    new Coordinate(5, 3),
+    new Coordinate(5, 4)
+  ];
+
+  public static GREEN_SHELTER: Coordinate[] = [
+    new Coordinate(9, 5),
+    new Coordinate(8, 5),
+    new Coordinate(7, 5),
+    new Coordinate(6, 5)
+  ];
+
+  public static YELLOW_SHELTER: Coordinate[] = [
+    new Coordinate(5, 9),
+    new Coordinate(5, 8),
+    new Coordinate(5, 7),
+    new Coordinate(5, 6)
+  ];
+
+  public static getShelterCoordinatesFor(color: Color): Coordinate[] {
+    switch (color) {
+      case Color.RED:
+        return Constants.RED_SHELTER;
+      case Color.BLEU:
+        return Constants.BLEU_SHELTER;
+      case Color.GREEN:
+        return Constants.GREEN_SHELTER;
+      case Color.YELLOW:
+        return Constants.YELLOW_SHELTER;
+    }
+  }
+  public static getHomeCoordinatesFor(pawn: Pawn): Coordinate[] {
+    switch (pawn.color) {
+      case Color.RED:
+        return Constants.RED_HOME;
+      case Color.BLEU:
+        return Constants.BLEU_HOME;
+      case Color.GREEN:
+        return Constants.GREEN_HOME;
+      case Color.YELLOW:
+        return Constants.YELLOW_HOME;
+    }
+  }
+
+  public static getIndexForLastCoordinate(pawn: Pawn): number {
+    switch (pawn.color) {
+      case Color.RED:
+        return Constants.RED_START - 1;
+      case Color.BLEU:
+        return Constants.BLEU_START - 1;
+      case Color.GREEN:
+        return Constants.GREEN_START - 1;
+      case Color.YELLOW:
+        return Constants.YELLOW_START - 1;
+    }
+  }
 }
