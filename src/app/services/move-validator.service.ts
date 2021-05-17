@@ -10,8 +10,7 @@ import {NotificationsService} from 'angular2-notifications';
 })
 export class MoveValidatorService {
 
-  constructor(private notificationService: NotificationsService,
-              private playFieldService: PlayFieldService) {
+  constructor(private notificationService: NotificationsService) {
   }
 
   public isValidMove(pawn: Pawn | null, dice: number | null, player: Player): boolean {
@@ -33,15 +32,11 @@ export class MoveValidatorService {
   }
 
   private followsGameRules(pawn: Pawn, dice: number): boolean {
-    const isOnBoard: boolean = Constants.COORDINATES.includes(pawn.coordinate);
-
-    if (isOnBoard && !this.isGoingInShelter(pawn, dice)) {
-      return true;
-    }
-    if (isOnBoard && this.isGoingInShelter(pawn, dice) && this.isSpaceAvailableInShelter(pawn, dice)) {
-      return true;
-    }
+    const isOnBoard: boolean = this.pawnIsOnBoard(pawn);
     if (!isOnBoard && this.canStartFromHome(dice)) {
+      return true;
+    }
+    if (isOnBoard) {
       return true;
     }
     this.notificationService.info('Illegal move', 'Please pick another pawn or pass');
@@ -52,25 +47,12 @@ export class MoveValidatorService {
     return dice === 6;
   }
 
-  private isGoingInShelter(pawn: Pawn, dice: number): boolean {
-    const index = PlayFieldService.getIndex(pawn);
-    const indexForLastCoordinate = Constants.getIndexForLastCoordinate(pawn);
-    return index < indexForLastCoordinate && (index + dice) > indexForLastCoordinate;
-  }
-
-  private isSpaceAvailableInShelter(pawn: Pawn, dice: number): boolean {
-    const index = PlayFieldService.getIndex(pawn);
-    const indexForLastCoordinate = Constants.getIndexForLastCoordinate(pawn);
-    let indexInShelter = index + dice - indexForLastCoordinate - 1;
-    if (indexInShelter === 4) {
-      indexInShelter = 2;
+  private pawnIsOnBoard(pawn: Pawn): boolean {
+    for (const coordinate of Constants.COORDINATES) {
+      if (coordinate.x === pawn.coordinate.x && coordinate.y === pawn.coordinate.y) {
+        return true;
+      }
     }
-    if (indexInShelter === 5) {
-      indexInShelter = 1;
-    }
-    const shelter = Constants.getShelterCoordinatesFor(pawn.color);
-    const pawnOn = this.playFieldService.getPawnOn(shelter[indexInShelter]);
-    return pawnOn === null;
+    return false;
   }
-
 }

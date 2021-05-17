@@ -1,15 +1,18 @@
-<button (click)="rollDice()">Roll the dice</button>
-<button (click)="moveSelectedPawn()">Move selected pawn</button>
-<button (click)="nextPlayer()">Pass</button>
+<button (click)="startGame()">Nieuw spel</button>
+<button (click)="rollDice()">Rol de dobbelsteen</button>
+<button (click)="moveSelectedPawn()">Pion verplaatsen</button>
+<button (click)="nextPlayer()">Pas</button>
 <br>
-Player to move :
-<svg height="50" width="50">
-  <circle cx="25" cy="25" r="20" stroke="black" stroke-width="3" [attr.fill]="player.color" />
+<div [hidden]="playFieldService.ongoingGame()">
+{{playFieldService.getCurrentPlayerName()}} is aan de beurt
+<svg height="26" width="26">
+  <circle cx="13" cy="13" r="10" stroke="black" stroke-width="3" [attr.fill]="playFieldService.getCurrentPlayerColor()" />
   Sorry, your browser does not support inline SVG.
 </svg>
+<br>
 
-{{dice}}
-
+{{diceNumber}}
+</div>
 
 <simple-notifications></simple-notifications>
 <app-board></app-board>

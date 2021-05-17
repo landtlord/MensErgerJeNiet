@@ -1,0 +1,40 @@
+<h1 mat-dialog-title xmlns="http://www.w3.org/1999/html">Vul de namen van de spelers in</h1>
+<div mat-dialog-content>
+  <svg height="25" width="25">
+    <circle cx="12" cy="12" r="10" stroke="black" stroke-width="1" fill="red"/>
+    Sorry, your browser does not support inline SVG.
+  </svg>
+  naam =
+  <input typy="text"  [(ngModel)]="redPlayer">
+
+  <br/>
+  <svg height="25" width="25">
+    <circle cx="12" cy="12" r="10" stroke="black" stroke-width="1" fill="blue"/>
+    Sorry, your browser does not support inline SVG.
+  </svg>
+  naam =
+  <input typy="text" [(ngModel)]="bluePlayer">
+
+  <br/>
+  <svg height="25" width="25">
+    <circle cx="12" cy="12" r="10" stroke="black" stroke-width="1" fill="green"/>
+    Sorry, your browser does not support inline SVG.
+  </svg>
+  naam =
+  <input typy="text"  [(ngModel)]="greenPlayer">
+
+  <br/>
+  <svg height="25" width="25">
+    <circle cx="12" cy="12" r="10" stroke="black" stroke-width="1" fill="yellow"/>
+    Sorry, your browser does not support inline SVG.
+  </svg>
+  naam =
+  <input typy="text"  [(ngModel)]="yellowPlayer">
+
+
+</div>
+<div mat-dialog-actions>
+  <button mat-button mat-dialog-close>sluiten</button>
+  <button mat-button (click)="createPlayers()">spelers instellen</button>
+  <button mat-button (click)="start()">start spel</button>
+</div>

@@ -1,0 +1,22 @@
+{
+  "/api/games/new/*": {
+    "target": "http://localhost:8080",
+    "secure": false
+  },
+  "/api/games/move/*": {
+    "target": "http://localhost:8080",
+    "secure": false
+  },
+  "/api/dices/new/": {
+    "target": "http://localhost:8081",
+    "secure": false
+  },
+  "/api/players/*": {
+    "target": "http://localhost:8083",
+    "secure": false
+  },
+  "/api/Color": {
+    "target": "http://localhost:8085",
+    "secure": false
+  }
+}

@@ -11,11 +11,6 @@ export class PlayerService {
 
 
   constructor() {
-    this.players.push(new Player(Color.RED),
-      new Player(Color.BLEU),
-      new Player(Color.GREEN),
-      new Player(Color.YELLOW)
-    );
   }
 
   getNextPlayer(currentPlayer: Player): Player {
@@ -23,4 +18,6 @@ export class PlayerService {
     const nextIndex = (index + 1) % this.players.length;
     return this.players[nextIndex];
   }
+
+
 }

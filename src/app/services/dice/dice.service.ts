@@ -1,14 +1,24 @@
 import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {Dice} from '../../model/Dice/dice';
+import {Observable, throwError} from 'rxjs';
+import {catchError} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DiceService {
 
-  constructor() {
+  private diceUrl = 'api/dices/new/';
+
+  constructor(private http: HttpClient) {
   }
 
-  rollDice(): number {
-    return Math.floor(Math.random() * 6) + 1;
+  rollDice(): Observable<Dice> {
+    return this.http.get<Dice>(this.diceUrl).pipe(catchError(error => {
+      return throwError(error.message);
+    }));
   }
+
+
 }

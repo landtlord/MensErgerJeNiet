@@ -5,7 +5,10 @@ import {BoardComponent} from '../board/board.component';
 import {NotificationsService} from 'angular2-notifications';
 import {MoveValidatorService} from '../services/move-validator.service';
 import {Player} from '../model/player';
-import {PlayerService} from '../services/player.service';
+import {Dice} from '../model/Dice/dice';
+import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
+import {StartDialogComponent} from '../start-dialog/start-dialog.component';
+import {WinnerDialogComponent} from '../winner-dialog/winner-dialog.component';
 
 @Component({
   selector: 'app-play-field',
@@ -13,9 +16,11 @@ import {PlayerService} from '../services/player.service';
   styleUrls: ['./play-field.component.css']
 })
 export class PlayFieldComponent implements OnInit, AfterViewInit {
-  dice: number | null = null;
+  dice: Dice | null = null;
+  diceNumber: number | null = null;
 
-  player: Player;
+  player: Player | null = null;
+  currentPlayerColor = 'black';
 
   // @ts-ignore
   @ViewChild(BoardComponent) board: BoardComponent;
@@ -24,17 +29,18 @@ export class PlayFieldComponent implements OnInit, AfterViewInit {
               public playFieldService: PlayFieldService,
               private notificationService: NotificationsService,
               private moveValidatorService: MoveValidatorService,
-              private playerService: PlayerService) {
-    this.player = playerService.players[0];
+              public dialog: MatDialog) {
   }
 
   ngOnInit(): void {
-    this.playFieldService.initiate();
   }
 
   rollDice(): void {
     if (this.dice === null) {
-      this.dice = this.diceService.rollDice();
+      this.diceService.rollDice().subscribe(data => {
+        this.dice = data;
+        this.diceNumber = data.dice;
+      });
     } else {
       this.notificationService.info('Already rolled the dice', 'Please pick a pawn to move or pass');
     }
@@ -43,11 +49,10 @@ export class PlayFieldComponent implements OnInit, AfterViewInit {
   moveSelectedPawn(): void {
     if (this.isValidMove()) {
       this.movePawn();
-      if (this.playFieldService.checkIfPlayerWins(this.player)) {
-      //  goto winner page
+      if (this.playFieldService.checkIfPlayerWins()) {
+        const matDialogRef = this.dialog.open(WinnerDialogComponent);
       }
       this.setNextPlayer();
-      this.resetDiceAndPawn();
     } else {
       this.board.clickedPawn = null;
     }
@@ -55,7 +60,9 @@ export class PlayFieldComponent implements OnInit, AfterViewInit {
 
   nextPlayer(): void {
     if (this.dice !== null) {
-      this.player = this.playerService.getNextPlayer(this.player);
+      // @ts-ignore
+      this.player = this.playFieldService.getNextPlayer();
+      this.currentPlayerColor = this.player.color;
       this.resetDiceAndPawn();
     } else {
       this.notificationService.info('Roll the dice before passing', 'Press the roll the dice button');
@@ -72,17 +79,40 @@ export class PlayFieldComponent implements OnInit, AfterViewInit {
 
   private isValidMove(): boolean {
     // @ts-ignore
-    return this.moveValidatorService.isValidMove(this.board.clickedPawn, this.dice, this.player);
+    return this.moveValidatorService.isValidMove(this.board.clickedPawn, this.diceNumber, this.player);
   }
 
   private setNextPlayer(): void {
-    if (this.dice !== 6) {
-      this.player = this.playerService.getNextPlayer(this.player);
+    if (this.diceNumber === 6) {
+      this.player = this.playFieldService.getCurrentPlayer();
+    } else {
+      this.player = this.playFieldService.getNextPlayer();
     }
+    this.currentPlayerColor = this.player.color;
+    this.resetDiceAndPawn();
   }
 
   private resetDiceAndPawn(): void {
     this.board.clickedPawn = null;
     this.dice = null;
+    this.diceNumber = null;
+    this.board.setPawns(this.playFieldService.getPawns());
+  }
+
+  getDice(): number {
+    if (this.dice === null) {
+      return 0;
+    }
+    return this.dice.dice;
+  }
+
+  startGame(): void {
+    const matDialogRef = this.dialog.open(StartDialogComponent);
+    matDialogRef.afterClosed().subscribe(result => {
+      console.log('new game created');
+    });
+    this.player = this.playFieldService.getCurrentPlayer();
+    this.currentPlayerColor = this.playFieldService.getCurrentPlayer().color;
+    this.board.setPawns(this.playFieldService.getPawns());
   }
 }

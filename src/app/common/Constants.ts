@@ -46,39 +46,6 @@ export class Constants {
     new Coordinate(0, 5)
   ];
 
-  public static RED_START = 0;
-  public static BLEU_START = 10;
-  public static GREEN_START = 20;
-  public static YELLOW_START = 30;
-
-  public static RED_HOME: Coordinate[] = [
-    new Coordinate(0, 0),
-    new Coordinate(0, 1),
-    new Coordinate(1, 0),
-    new Coordinate(1, 1)
-  ];
-
-  public static BLEU_HOME: Coordinate[] = [
-    new Coordinate(9, 0),
-    new Coordinate(9, 1),
-    new Coordinate(10, 0),
-    new Coordinate(10, 1)
-  ];
-
-  public static GREEN_HOME: Coordinate[] = [
-    new Coordinate(9, 9),
-    new Coordinate(9, 10),
-    new Coordinate(10, 9),
-    new Coordinate(10, 10)
-  ];
-
-  public static YELLOW_HOME: Coordinate[] = [
-    new Coordinate(0, 9),
-    new Coordinate(0, 10),
-    new Coordinate(1, 9),
-    new Coordinate(1, 10)
-  ];
-
   public static RED_SHELTER: Coordinate[] = [
     new Coordinate(1, 5),
     new Coordinate(2, 5),
@@ -107,41 +74,18 @@ export class Constants {
     new Coordinate(5, 6)
   ];
 
-  public static getShelterCoordinatesFor(color: Color): Coordinate[] {
+  public static getShelterCoordinatesFor(color: string): Coordinate[] {
     switch (color) {
-      case Color.RED:
+      case 'RED':
         return Constants.RED_SHELTER;
-      case Color.BLEU:
+      case 'BLEU':
         return Constants.BLEU_SHELTER;
-      case Color.GREEN:
+      case 'GREEN':
         return Constants.GREEN_SHELTER;
-      case Color.YELLOW:
+      case 'YELLOW':
         return Constants.YELLOW_SHELTER;
-    }
-  }
-  public static getHomeCoordinatesFor(pawn: Pawn): Coordinate[] {
-    switch (pawn.color) {
-      case Color.RED:
-        return Constants.RED_HOME;
-      case Color.BLEU:
-        return Constants.BLEU_HOME;
-      case Color.GREEN:
-        return Constants.GREEN_HOME;
-      case Color.YELLOW:
-        return Constants.YELLOW_HOME;
-    }
-  }
-
-  public static getIndexForLastCoordinate(pawn: Pawn): number {
-    switch (pawn.color) {
-      case Color.RED:
-        return Constants.RED_START - 1;
-      case Color.BLEU:
-        return Constants.BLEU_START - 1;
-      case Color.GREEN:
-        return Constants.GREEN_START - 1;
-      case Color.YELLOW:
-        return Constants.YELLOW_START - 1;
+      default:
+        return [];
     }
   }
 }

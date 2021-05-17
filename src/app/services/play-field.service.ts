@@ -1,71 +1,75 @@
 import {Injectable} from '@angular/core';
 import {Pawn} from '../model/pawn/pawn';
-import {Color} from '../model/pawn/color.enum';
 import {Coordinate} from '../model/pawn/coordinate';
 import {Constants} from '../common/Constants';
 import {Player} from '../model/player';
+import {Game} from '../model/game';
+import {HttpClient} from '@angular/common/http';
+import {Dice} from '../model/Dice/dice';
+import {catchError} from 'rxjs/operators';
+import {throwError} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PlayFieldService {
 
-  constructor() {
-  }
+  game: Game;
+  gameUrl = 'api/games/';
+  currentPlayerIndex = 0;
+  playerArray: number[] = [];
 
-  pawns: Pawn[] = [];
+  constructor(private http: HttpClient) {
+    this.game = new Game(-1, [], [], [], []);
+  }
 
   public static getIndex(pawn: Pawn): number {
     return Constants.COORDINATES.findIndex(coordinate => coordinate === pawn.coordinate);
   }
 
   initiate(): void {
-    this.pawns.push(new Pawn(Color.RED, new Coordinate(0, 0)));
-    this.pawns.push(new Pawn(Color.RED, new Coordinate(0, 1)));
-    this.pawns.push(new Pawn(Color.RED, new Coordinate(1, 0)));
-    this.pawns.push(new Pawn(Color.RED, new Coordinate(1, 1)));
-    this.pawns.push(new Pawn(Color.BLEU, new Coordinate(9, 0)));
-    this.pawns.push(new Pawn(Color.BLEU, new Coordinate(9, 1)));
-    this.pawns.push(new Pawn(Color.BLEU, new Coordinate(10, 0)));
-    this.pawns.push(new Pawn(Color.BLEU, new Coordinate(10, 1)));
-    this.pawns.push(new Pawn(Color.GREEN, new Coordinate(9, 9)));
-    this.pawns.push(new Pawn(Color.GREEN, new Coordinate(9, 10)));
-    this.pawns.push(new Pawn(Color.GREEN, new Coordinate(10, 9)));
-    this.pawns.push(new Pawn(Color.GREEN, new Coordinate(10, 10)));
-    this.pawns.push(new Pawn(Color.YELLOW, new Coordinate(0, 9)));
-    this.pawns.push(new Pawn(Color.YELLOW, new Coordinate(0, 10)));
-    this.pawns.push(new Pawn(Color.YELLOW, new Coordinate(1, 9)));
-    this.pawns.push(new Pawn(Color.YELLOW, new Coordinate(1, 10)));
+    const headers = {'content-type': 'application/json'};
+    const body = '[' + this.playerArray.join() + ']';
+    this.http.post<Game>(this.gameUrl + 'new/', body, {headers})
+      .pipe(catchError(error => {
+        return throwError(error.message);
+      }))
+      .subscribe(data => {
+        this.game = data;
+        console.log(this.game);
+      });
   }
 
-  movePawn(pawn: Pawn, dice: number): void {
-    let index = PlayFieldService.getIndex(pawn);
-
-    if (index === -1) {
-      this.putOnBoard(pawn);
-    } else if (!this.isGoingInShelter(pawn, dice)) {
-      index = (index + dice) % 40;
-      const coordinate = Constants.COORDINATES[index];
-      this.movePawnTo(pawn, coordinate);
-    } else {
-      const indexForLastCoordinate = Constants.getIndexForLastCoordinate(pawn);
-      let indexInShelter = index + dice - indexForLastCoordinate - 1;
-      if (indexInShelter === 4) {
-        indexInShelter = 2;
-      }
-      if (indexInShelter === 5) {
-        indexInShelter = 1;
-      }
-      pawn.coordinate = Constants.getShelterCoordinatesFor(pawn.color)[indexInShelter];
-    }
+  movePawn(pawn: Pawn, dice: Dice): void {
+    const headers = {'content-type': 'application/json'};
+    const body = '{"diceId" :' + dice.id + ',"pawnToMoveId": ' + pawn.id + ', "playerId": ' + this.getCurrentPlayer().id + '  }';
+    // @ts-ignore
+    this.http.post<Game>(this.gameUrl + 'move/' + this.game.id, body, {headers})
+      .pipe(catchError(error => {
+        return throwError(error.message);
+      }))
+      .subscribe(data => {
+        this.game = data;
+      });
   }
 
   getPawns(): Pawn[] {
-    return this.pawns;
+    if (this.game === null) {
+      return [];
+    }
+    return this.game.pawns;
+  }
+
+  getPlayers(): Player[] {
+    if (this.game === null) {
+      return [];
+    }
+    return this.game.players;
   }
 
   getPawnOn(coordinate: Coordinate): Pawn | null {
-    for (const pawn of this.pawns) {
+    // @ts-ignore
+    for (const pawn of this.game.pawns) {
       if (pawn.coordinate === coordinate) {
         return pawn;
       }
@@ -73,57 +77,49 @@ export class PlayFieldService {
     return null;
   }
 
-  private putOnBoard(pawn: Pawn): void {
-    switch (pawn.color) {
-      case Color.RED:
-        this.movePawnTo(pawn, Constants.COORDINATES[Constants.RED_START]);
-        break;
-      case Color.BLEU:
-        this.movePawnTo(pawn, Constants.COORDINATES[Constants.BLEU_START]);
-        break;
-      case Color.GREEN:
-        this.movePawnTo(pawn, Constants.COORDINATES[Constants.GREEN_START]);
-        break;
-      case Color.YELLOW:
-        this.movePawnTo(pawn, Constants.COORDINATES[Constants.YELLOW_START]);
-        break;
-    }
-  }
-
-  private movePawnTo(pawn: Pawn, coordinate: Coordinate): void {
-    this.sendHome(this.getPawnOn(coordinate));
-    pawn.coordinate = coordinate;
-  }
-
-  private isGoingInShelter(pawn: Pawn, dice: number): boolean {
-    const index = PlayFieldService.getIndex(pawn);
-    const indexForLastCoordinate = Constants.getIndexForLastCoordinate(pawn);
-    return index < indexForLastCoordinate && (index + dice) > indexForLastCoordinate;
-  }
-
-  private sendHome(pawn: Pawn | null): void {
-    if (pawn !== null) {
-      const homeCoordinates = Constants.getHomeCoordinatesFor(pawn);
-      pawn.coordinate = this.findFirstEmpty(homeCoordinates);
-    }
-  }
-
-  // @ts-ignore
-  private findFirstEmpty(coordinates: Coordinate[]): Coordinate {
-    for (const coordinate of coordinates) {
-      if (this.getPawnOn(coordinate) === null) {
-        return coordinate;
-      }
-    }
-  }
-
-  checkIfPlayerWins(player: Player): boolean {
-    const shelterCoordinates = Constants.getShelterCoordinatesFor(player.color);
+  checkIfPlayerWins(): boolean {
+    const color = this.getCurrentPlayer().color;
+    const shelterCoordinates = Constants.getShelterCoordinatesFor(color);
     for (const coordinate of shelterCoordinates) {
       if (this.getPawnOn(coordinate) === null) {
         return false;
       }
     }
     return true;
+  }
+
+  getCurrentPlayer(): Player {
+    // @ts-ignore
+    return this.game.players[this.currentPlayerIndex];
+  }
+
+  getNextPlayer(): Player {
+    // @ts-ignore
+    this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this.getPlayers().length;
+    return this.getCurrentPlayer();
+  }
+
+  getCurrentPlayerColor(): string {
+    if (this.game.players.length === 0) {
+      return 'white';
+    }
+    return this.getCurrentPlayer().color;
+  }
+
+  getCurrentPlayerName(): string {
+    if (this.game.players.length === 0) {
+      return '';
+    }
+    return this.getCurrentPlayer().name;
+  }
+
+  ongoingGame(): boolean {
+    return this.game.id === -1;
+  }
+
+  reset(): void {
+    this.game = new Game(-1, [], [], [], []);
+    this.currentPlayerIndex = 0;
+    this.playerArray = [];
   }
 }

@@ -1,9 +1,11 @@
 import {Color} from './pawn/color.enum';
 
-export class Player {
+export interface Player {
+  id: number;
+
+  name: string;
+
   color: Color;
 
-  constructor(color: Color) {
-    this.color = color;
-  }
+  colorId: number;
 }
