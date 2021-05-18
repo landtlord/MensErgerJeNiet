@@ -70,7 +70,7 @@ export class PlayFieldService {
   getPawnOn(coordinate: Coordinate): Pawn | null {
     // @ts-ignore
     for (const pawn of this.game.pawns) {
-      if (pawn.coordinate === coordinate) {
+      if (pawn.coordinate.x === coordinate.x && pawn.coordinate.y === coordinate.y) {
         return pawn;
       }
     }
@@ -80,12 +80,23 @@ export class PlayFieldService {
   checkIfPlayerWins(): boolean {
     const color = this.getCurrentPlayer().color;
     const shelterCoordinates = Constants.getShelterCoordinatesFor(color);
+    const pawnsForCurrentPLayer = this.getCurrentPlayerPawns();
     for (const coordinate of shelterCoordinates) {
-      if (this.getPawnOn(coordinate) === null) {
+      if (!this.aPawnIsOnThisCoordinate(coordinate, pawnsForCurrentPLayer)) {
         return false;
       }
     }
     return true;
+  }
+
+  private aPawnIsOnThisCoordinate(coordinate: Coordinate, pawnsForCurrentPLayer: Pawn[]): boolean {
+    for (const pawn of pawnsForCurrentPLayer) {
+      if (pawn.coordinate.x === coordinate.x &&
+        pawn.coordinate.y === coordinate.y) {
+        return true;
+      }
+    }
+    return false;
   }
 
   getCurrentPlayer(): Player {
@@ -121,5 +132,9 @@ export class PlayFieldService {
     this.game = new Game(-1, [], [], [], []);
     this.currentPlayerIndex = 0;
     this.playerArray = [];
+  }
+
+  private getCurrentPlayerPawns(): Pawn[] {
+    return this.game.pawns.filter(pawn => pawn.color === this.getCurrentPlayer().color);
   }
 }

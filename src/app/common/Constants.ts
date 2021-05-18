@@ -53,7 +53,7 @@ export class Constants {
     new Coordinate(4, 5)
   ];
 
-  public static BLEU_SHELTER: Coordinate[] = [
+  public static BLUE_SHELTER: Coordinate[] = [
     new Coordinate(5, 1),
     new Coordinate(5, 2),
     new Coordinate(5, 3),
@@ -78,8 +78,8 @@ export class Constants {
     switch (color) {
       case 'RED':
         return Constants.RED_SHELTER;
-      case 'BLEU':
-        return Constants.BLEU_SHELTER;
+      case 'BLUE':
+        return Constants.BLUE_SHELTER;
       case 'GREEN':
         return Constants.GREEN_SHELTER;
       case 'YELLOW':

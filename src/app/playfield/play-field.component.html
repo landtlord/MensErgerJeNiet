@@ -1,7 +1,7 @@
-<button (click)="startGame()">Nieuw spel</button>
-<button (click)="rollDice()">Rol de dobbelsteen</button>
-<button (click)="moveSelectedPawn()">Pion verplaatsen</button>
-<button (click)="nextPlayer()">Pas</button>
+<button (click)="startGame()" [hidden]="!playFieldService.ongoingGame()">Nieuw spel</button>
+<button (click)="rollDice()" [hidden]="playFieldService.ongoingGame()">Rol de dobbelsteen</button>
+<button (click)="moveSelectedPawn()" [hidden]="playFieldService.ongoingGame()">Pion verplaatsen</button>
+<button (click)="nextPlayer()"[hidden]="playFieldService.ongoingGame()">Pas</button>
 <br>
 <div [hidden]="playFieldService.ongoingGame()">
 {{playFieldService.getCurrentPlayerName()}} is aan de beurt

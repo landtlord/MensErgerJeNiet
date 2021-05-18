@@ -51,6 +51,7 @@ export class PlayFieldComponent implements OnInit, AfterViewInit {
       this.movePawn();
       if (this.playFieldService.checkIfPlayerWins()) {
         const matDialogRef = this.dialog.open(WinnerDialogComponent);
+        return;
       }
       this.setNextPlayer();
     } else {

@@ -12,7 +12,6 @@ export class Game {
 
   players: Player[];
 
-
   constructor(id: number, pawnsIds: number[], pawns: Pawn[], playersIds: number[], players: Player[]) {
     this.id = id;
     this.pawnsIds = pawnsIds;
